@@ -14,6 +14,16 @@ const useStyles = makeStyles({
   footer: {
     textAlign: 'center',
     marginTop: 10
+  },
+  logo: {
+    fontSize: '2rem',
+    fontWeight: 'bold'
+  },
+  flexGrow: {
+    flexGrow: 1
+  },
+  linkToBack: {
+    margin: '10px 0px'
   }
 });
 export default useStyles;
