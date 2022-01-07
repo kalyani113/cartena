@@ -6,12 +6,12 @@ import {Grid, Link, List, ListItem, Typography, Button, Card} from '@material-ui
 import Image from 'next/Image';
 import NextLink from 'next/link';
 import useStyles from '../../utils/styles';
+import db from '../../utils/db';
+import Product from '../../models/Product';
 
-export default function ProductDescription() {
+export default function ProductDescription(props) {
   const classes = useStyles();
-  const router = useRouter();
-  const {slug} = router.query;
-  const reqProduct = data.products.find((i) => i.slug === slug);
+  const reqProduct = props.product;
   if (!reqProduct) {
     return <div>Product not found..</div>;
   }
@@ -81,4 +81,17 @@ export default function ProductDescription() {
       </Grid>
     </Layout>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { params } = context;
+  const { slug } = params;
+  await db.connect();
+  const product = await Product.findOne({slug}).lean();
+  await db.disconnect();
+  return {
+    props: {
+      product: db.docToObject(product),
+    },
+  };
 }
