@@ -5,6 +5,9 @@ import Cookies from 'js-cookie';
 
 const initialState = {
   darkMode: Cookies.get('darkMode') === 'ON' ? true : false,
+  cart: {
+    cartItems:  Cookies.get('cartItems') ? JSON.parse(Cookies.get('cartItems')) : []
+  }
 };
 
 const reducer = (state, action) => {
@@ -15,6 +18,18 @@ const reducer = (state, action) => {
     case 'DARK_MODE_OFF':
       return {...state, darkMode: false};
       break;
+    case 'ADD_TO_CART':
+      const extistingCartItems = state.cart.cartItems;
+      const product = action.payload;
+      const productExists = extistingCartItems.find((item) => item.slug === product.slug);
+      let cartItems = [];
+      if (productExists) {
+        cartItems = extistingCartItems.map((item) => (item.slug === product.slug ? product : item));
+      } else {
+        cartItems = [...extistingCartItems, product];
+      }
+      Cookies.set('cartItems', JSON.stringify(cartItems));
+      return {...state, cart: {...state.cart, cartItems}};
     default:
       return {...state};
   }

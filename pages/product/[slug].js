@@ -1,6 +1,5 @@
-import {useRouter} from 'next/router';
-import React from 'react';
-import data from '../../utils/dummy-data';
+import React, {useContext} from 'react';
+import axios from 'axios';
 import Layout from '../../components/Layout';
 import {Grid, Link, List, ListItem, Typography, Button, Card} from '@material-ui/core';
 import Image from 'next/Image';
@@ -8,12 +7,22 @@ import NextLink from 'next/link';
 import useStyles from '../../utils/styles';
 import db from '../../utils/db';
 import Product from '../../models/Product';
+import {Store} from '../../utils/Store';
 
 export default function ProductDescription(props) {
+  const {dispatch} = useContext(Store);
   const classes = useStyles();
   const reqProduct = props.product;
   if (!reqProduct) {
     return <div>Product not found..</div>;
+  }
+  const addToCart = async () => {
+    const {data} = await axios.get(`/api/products/${reqProduct._id}`);
+    if (data && data.countInStock <= 0) {
+      window.alert('Sorry, product is out of stock');
+    } else {
+      dispatch({type: 'ADD_TO_CART', payload: data});
+    }
   }
   return (
     <Layout title={reqProduct.name} description={reqProduct.description}>
@@ -71,7 +80,7 @@ export default function ProductDescription(props) {
                 </Grid>
               </ListItem>
               <ListItem>
-                <Button fullWidth color='secondary' variant='contained'>
+                <Button fullWidth color='secondary' variant='contained' onClick={addToCart}>
                   Add to Cart
                 </Button>
               </ListItem>
