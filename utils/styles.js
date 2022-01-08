@@ -28,6 +28,10 @@ const useStyles = makeStyles({
   },
   linkToBack: {
     margin: '10px 0px'
+  },
+  navbarButton: {
+    color: '#FFFFFF',
+    textTransform: 'capitalize'
   }
 });
 export default useStyles;

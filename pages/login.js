@@ -1,22 +1,39 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {Button, TextField, Typography, List, ListItem, Link} from '@material-ui/core';
 import Layout from '../components/Layout';
 import useStyles from '../utils/styles';
 import NextLink from 'next/link';
 import axios from 'axios';
+import {Store} from '../utils/Store';
+import {useRouter} from 'next/router';
 
 export default function Login() {
   const classes = useStyles();
+  const router = useRouter();
+  const {dispatch, state} = useContext(Store);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const {redirect} = router.query;
+
   const handleLogin = async () => {
     try {
-      const {data} = await axios.post('/api/users/login', {email, password});
+      const {
+        data: {user, token}
+      } = await axios.post('/api/users/login', {email, password});
+      dispatch({type: 'USER_LOGIN', payload: {...user, token}});
+      router.push(redirect ? redirect : '/');
     } catch (error) {
       console.error(error);
       alert(error.response?.data?.message || error);
     }
   };
+
+  useEffect(() => {
+    if (state.userInfo) {
+      router.push('/');
+    }
+  }, []);
+
   return (
     <Layout>
       <form className={classes.loginForm}>
