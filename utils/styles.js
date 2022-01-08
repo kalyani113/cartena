@@ -1,6 +1,10 @@
 import {makeStyles} from '@material-ui/core';
 
 const useStyles = makeStyles({
+  loginForm: {
+    width: '60%',
+    margin: '0 auto'
+  },
   appBar: {
     backgroundColor: '#232f3e',
     '& a': {

@@ -5,8 +5,10 @@ import {Typography, TableContainer, Table, TableHead, TableRow, TableCell, Table
 import NextLink from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import {useRouter} from 'next/router';
 
 function CartPage() {
+  const router = useRouter();
   const {state, dispatch} = useContext(Store);
   const {
     cart: {cartItems}
@@ -85,7 +87,7 @@ function CartPage() {
                       </Typography>
                     </ListItem>
                     <ListItem>
-                      <Button fullWidth color='secondary' variant='contained'>
+                      <Button fullWidth color='secondary' variant='contained' onClick={() => router.push('/checkout')}>
                         Checkout
                       </Button>
                     </ListItem>
