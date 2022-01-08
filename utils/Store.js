@@ -30,6 +30,10 @@ const reducer = (state, action) => {
       }
       Cookies.set('cartItems', JSON.stringify(cartItems));
       return {...state, cart: {...state.cart, cartItems}};
+    case 'REMOVE_FROM_CART':
+      const newCartItems = state.cart.cartItems.filter((item) => item._id !== action.payload._id);
+      Cookies.set('cartItems', JSON.stringify(newCartItems));
+      return {...state, cart: {...state.cart, cartItems: newCartItems}};
     default:
       return {...state};
   }
