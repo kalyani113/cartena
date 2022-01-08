@@ -8,9 +8,12 @@ import useStyles from '../../utils/styles';
 import db from '../../utils/db';
 import Product from '../../models/Product';
 import {Store} from '../../utils/Store';
+import {useRouter} from 'next/router';
+
 
 export default function ProductDescription(props) {
   const {dispatch} = useContext(Store);
+  const router = useRouter();
   const classes = useStyles();
   const reqProduct = props.product;
   if (!reqProduct) {
@@ -21,7 +24,8 @@ export default function ProductDescription(props) {
     if (data && data.countInStock <= 0) {
       window.alert('Sorry, product is out of stock');
     } else {
-      dispatch({type: 'ADD_TO_CART', payload: data});
+      dispatch({type: 'ADD_TO_CART', payload: { ...data, quantity: 1}});
+      router.push('/cart');
     }
   }
   return (
