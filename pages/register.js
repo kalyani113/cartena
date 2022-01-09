@@ -1,46 +1,48 @@
-import React, {useState, useContext, useEffect} from 'react';
-import {Button, TextField, Typography, List, ListItem, Link} from '@material-ui/core';
+import {Typography, List, ListItem, TextField, Button, Link} from '@material-ui/core';
+import React, {useContext, useState} from 'react';
 import Layout from '../components/Layout';
 import useStyles from '../utils/styles';
 import NextLink from 'next/link';
+import {useRouter} from 'next/router';
 import axios from 'axios';
 import {Store} from '../utils/Store';
-import {useRouter} from 'next/router';
 
-export default function Login() {
+export default function Register() {
   const classes = useStyles();
   const router = useRouter();
-  const {dispatch, state} = useContext(Store);
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const {redirect} = router.query;
+  const {dispatch} = useContext(Store);
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      alert('Passwords are not matching');
+      return;
+    }
     try {
       const {
         data: {user, token}
-      } = await axios.post('/api/users/login', {email, password});
+      } = await axios.post('/api/users/register', {name, email, password});
       dispatch({type: 'USER_LOGIN', payload: {...user, token}});
       router.push(redirect ? redirect : '/');
     } catch (error) {
-      console.error(error);
       alert(error.response?.data?.message || error);
     }
   };
-
-  useEffect(() => {
-    if (state.userInfo) {
-      router.push('/');
-    }
-  }, []);
 
   return (
     <Layout>
       <form className={classes.form}>
         <Typography component='h1' variant='h1'>
-          Login
+          Register
         </Typography>
         <List>
+          <ListItem>
+            <TextField variant='outlined' label='Name' fullWidth inputProps={{type: 'name'}} onChange={(e) => setName(e.target.value)} value={name} />
+          </ListItem>
           <ListItem>
             <TextField variant='outlined' label='Email' value={email} fullWidth inputProps={{type: 'email'}} onChange={(e) => setEmail(e.target.value)} />
           </ListItem>
@@ -48,14 +50,17 @@ export default function Login() {
             <TextField variant='outlined' label='Password' fullWidth inputProps={{type: 'password'}} onChange={(e) => setPassword(e.target.value)} value={password} />
           </ListItem>
           <ListItem>
-            <Button color='primary' variant='contained' fullWidth onClick={handleLogin}>
-              Login
+            <TextField variant='outlined' label='Confirm Password' fullWidth inputProps={{type: 'password'}} onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} />
+          </ListItem>
+          <ListItem>
+            <Button color='primary' variant='contained' fullWidth onClick={handleRegister}>
+              Register
             </Button>
           </ListItem>
           <ListItem>
-            Don't have account?&nbsp;
-            <NextLink href={`/register?redirect=${redirect ? redirect : '/'}`} passHref>
-              <Link>Register</Link>
+            Already have account?&nbsp;
+            <NextLink href={`/login?redirect=${redirect ? redirect : '/'}`} passHref>
+              <Link>Login</Link>
             </NextLink>
           </ListItem>
         </List>

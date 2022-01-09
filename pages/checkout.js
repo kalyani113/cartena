@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
 import { useRouter } from 'next/router';
 import { Store } from '../utils/Store';
+import Layout from '../components/Layout';
 
 export default function Shipping() {
   const router = useRouter();
@@ -9,5 +10,7 @@ export default function Shipping() {
   if (!userInfo) {
     router.push('/login?redirect=checkout');
   }
-  return <div onClick={() => router.push('/login')}>click</div>;
+  return <Layout>
+    Checkout
+  </Layout>;
 }

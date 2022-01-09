@@ -1,7 +1,7 @@
 import {makeStyles} from '@material-ui/core';
 
 const useStyles = makeStyles({
-  loginForm: {
+  form: {
     width: '60%',
     margin: '0 auto'
   },
