@@ -6,9 +6,10 @@ import Cookies from 'js-cookie';
 const initialState = {
   darkMode: Cookies.get('darkMode') === 'ON' ? true : false,
   cart: {
-    cartItems:  Cookies.get('cartItems') ? JSON.parse(Cookies.get('cartItems')) : []
+    cartItems: Cookies.get('cartItems') ? JSON.parse(Cookies.get('cartItems')) : [],
+    shippingAddress:  Cookies.get('shippingAddress') ? JSON.parse(Cookies.get('shippingAddress')) : null,
   },
-  userInfo: Cookies.get('userInfo') ? JSON.parse(Cookies.get('userInfo')): null
+  userInfo: Cookies.get('userInfo') ? JSON.parse(Cookies.get('userInfo')) : null
 };
 
 const reducer = (state, action) => {
@@ -37,11 +38,20 @@ const reducer = (state, action) => {
       return {...state, cart: {...state.cart, cartItems: newCartItems}};
     case 'USER_LOGIN':
       Cookies.set('userInfo', JSON.stringify(action.payload));
-      return {...state, userInfo: action.payload}
-    case 'USER_LOGOUT': 
+      return {...state, userInfo: action.payload};
+    case 'USER_LOGOUT':
       Cookies.remove('userInfo');
       Cookies.remove('cartItems');
-      return {...state, userInfo:null, cart:{cartItems: []}}
+      return {...state, userInfo: null, cart: {cartItems: []}};
+    case 'SAVE_SHIPPING_ADDRESS':
+      Cookies.set('shippingAddress', JSON.stringify(action.payload));
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          shippingAddress: action.payload
+        }
+      };
     default:
       return {...state};
   }
