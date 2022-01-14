@@ -1,6 +1,9 @@
 import {makeStyles} from '@material-ui/core';
 
 const useStyles = makeStyles({
+  section: {
+    margin: '10px 0px'
+  },
   form: {
     width: '60%',
     margin: '0 auto'
