@@ -29,7 +29,7 @@ export default function Payment() {
     closeSnackbar();
     e.preventDefault();
     if (!payment) {
-      enqueueSnackbar('Please choose payment method');
+      enqueueSnackbar('Please choose payment method', {variant: 'error'});
       return;
     }
     dispatch({type: 'SAVE_PAYMENT_METHOD', payload: payment});

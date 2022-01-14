@@ -1,34 +1,57 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Layout from '../components/Layout';
 import {Store} from '../utils/Store';
-import {Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Grid, Link, Select, MenuItem, Button, Card, List, ListItem} from '@material-ui/core';
+import {Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Grid, Link, Button, Card, List, ListItem, CircularProgress} from '@material-ui/core';
 import NextLink from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import {useRouter} from 'next/router';
 import CheckoutWizard from '../components/CheckoutWizard';
 import useStyles from '../utils/styles';
+import axios from 'axios';
+import {getError} from '../utils/error';
+import {useSnackbar} from 'notistack';
+import Cookies from 'js-cookie';
 
 function PlaceOrder() {
+  const {enqueueSnackbar, closeSnackbar} = useSnackbar();
   const classes = useStyles();
   const router = useRouter();
   const {state, dispatch} = useContext(Store);
   const {
-    cart: {cartItems, shippingAddress, paymentMethod}
+    cart: {cartItems, shippingAddress, paymentMethod},
+    userInfo
   } = state;
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!paymentMethod) {
       router.push('/payment');
     }
+    if (!cartItems.length) {
+      router.push('/cart');
+    }
   }, []);
 
-  const handlePlaceOrder = () => {};
+  const itemsPrice = cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
+  const taxPrice = itemsPrice * 0.15;
+  const shippingPrice = itemsPrice > 200 ? 0 : 15;
+  const totalPrice = itemsPrice + taxPrice + shippingPrice;
 
-  const itemPrice = cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
-  const taxPrice = itemPrice * 0.15;
-  const shippingPrice = itemPrice > 200 ? 0 : 15;
-  const totalPrice = itemPrice + taxPrice + shippingPrice;
+  const handlePlaceOrder = async () => {
+    closeSnackbar();
+    setLoading(true);
+    try {
+      const {data} = await axios.post('/api/orders', {paymentMethod, cartItems, shippingAddress, itemsPrice, shippingPrice, taxPrice, totalPrice}, {headers: {authorization: `Bearer ${userInfo?.token}`}});
+      dispatch({type: 'CART_CLEAR'});
+      Cookies.remove('cartItems');
+      router.push(`/orders/${data._id}`);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      enqueueSnackbar(getError(error), {variant: 'error'});
+    }
+  };
 
   return (
     <Layout>
@@ -44,7 +67,7 @@ function PlaceOrder() {
                 </Typography>
               </ListItem>
               <ListItem>
-                {shippingAddress.fullName}, {shippingAddress.address}, {shippingAddress.postalCode}, {shippingAddress.city}, {shippingAddress.county}
+                {shippingAddress?.fullName}, {shippingAddress?.address}, {shippingAddress?.postalCode}, {shippingAddress?.city}, {shippingAddress?.county}
               </ListItem>
             </List>
           </Card>
@@ -70,8 +93,8 @@ function PlaceOrder() {
                       <TableRow>
                         <TableCell>Image</TableCell>
                         <TableCell>Name</TableCell>
-                        <TableCell align="right">Quantity</TableCell>
-                        <TableCell align="right">Price</TableCell>
+                        <TableCell align='right'>Quantity</TableCell>
+                        <TableCell align='right'>Price</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -91,8 +114,8 @@ function PlaceOrder() {
                               </Link>
                             </NextLink>
                           </TableCell>
-                          <TableCell align="right">{item.quantity}</TableCell>
-                          <TableCell align="right">${item.price}</TableCell>
+                          <TableCell align='right'>{item.quantity}</TableCell>
+                          <TableCell align='right'>${item.price}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -114,7 +137,7 @@ function PlaceOrder() {
                     Items:
                   </Grid>
                   <Grid item xs={6} align='right'>
-                    ${itemPrice}
+                    ${itemsPrice}
                   </Grid>
                 </Grid>
               </ListItem>
@@ -153,6 +176,11 @@ function PlaceOrder() {
                   Place Order
                 </Button>
               </ListItem>
+              {loading && (
+                <ListItem>
+                  <CircularProgress />
+                </ListItem>
+              )}
             </List>
           </Card>
         </Grid>
