@@ -25,11 +25,12 @@ function PlaceOrder() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!paymentMethod) {
-      router.push('/payment');
-    }
     if (!cartItems.length) {
       router.push('/cart');
+      return;
+    }
+    if (!paymentMethod) {
+      router.push('/payment');
     }
   }, []);
 
@@ -44,9 +45,8 @@ function PlaceOrder() {
     try {
       const {data} = await axios.post('/api/orders', {paymentMethod, cartItems, shippingAddress, itemsPrice, shippingPrice, taxPrice, totalPrice}, {headers: {authorization: `Bearer ${userInfo?.token}`}});
       dispatch({type: 'CART_CLEAR'});
-      Cookies.remove('cartItems');
-      router.push(`/orders/${data._id}`);
       setLoading(false);
+      router.push(`/orders/${data._id}`);
     } catch (error) {
       setLoading(false);
       enqueueSnackbar(getError(error), {variant: 'error'});

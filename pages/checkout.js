@@ -4,19 +4,22 @@ import {Store} from '../utils/Store';
 import Layout from '../components/Layout';
 import {Controller, useForm} from 'react-hook-form';
 import useStyles from '../utils/styles';
-import { Typography, List, ListItem, TextField, Button} from '@material-ui/core';
+import {Typography, List, ListItem, TextField, Button} from '@material-ui/core';
 import CheckoutWizard from '../components/CheckoutWizard';
 
 export default function Shipping() {
   const router = useRouter();
   const classes = useStyles();
   const {state, dispatch} = useContext(Store);
-  const {userInfo} = state;
+  const {
+    userInfo,
+    cart: {cartItems}
+  } = state;
   const {
     handleSubmit,
     control,
     formState: {errors},
-    setValue,
+    setValue
   } = useForm();
 
   const saveShippingAddress = ({fullName, address, city, postalCode, country}) => {
@@ -24,7 +27,10 @@ export default function Shipping() {
     router.push('/payment');
   };
 
-  useEffect(()=>{
+  useEffect(() => {
+    if (!cartItems.length) {
+      router.push('/cart');
+    }
     if (!userInfo) {
       router.push('/login?redirect=checkout');
     }
@@ -34,7 +40,7 @@ export default function Shipping() {
     setValue('postalCode', state.cart.shippingAddress?.postalCode);
     setValue('country', state.cart.shippingAddress?.country);
   }, []);
- 
+
   return (
     <Layout>
       <CheckoutWizard activeStep={1} />

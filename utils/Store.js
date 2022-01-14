@@ -64,9 +64,11 @@ const reducer = (state, action) => {
         }
       };
     case 'CART_CLEAR':
+      Cookies.remove('cartItems');
+      Cookies.remove('paymentMethod');
       return {
         ...state,
-        cart: {cartItems: []}
+        cart: {cartItems: [], paymentMethod: ''}
       };
     default:
       return {...state};
