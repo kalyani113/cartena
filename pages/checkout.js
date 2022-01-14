@@ -26,7 +26,7 @@ export default function Shipping() {
 
   useEffect(()=>{
     if (!userInfo) {
-      router.push('/login');
+      router.push('/login?redirect=checkout');
     }
     setValue('fullName', state.cart.shippingAddress?.fullName);
     setValue('address', state.cart.shippingAddress?.address);

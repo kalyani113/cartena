@@ -7,9 +7,10 @@ const initialState = {
   darkMode: Cookies.get('darkMode') === 'ON' ? true : false,
   cart: {
     cartItems: Cookies.get('cartItems') ? JSON.parse(Cookies.get('cartItems')) : [],
-    shippingAddress:  Cookies.get('shippingAddress') ? JSON.parse(Cookies.get('shippingAddress')) : null,
+    shippingAddress: Cookies.get('shippingAddress') ? JSON.parse(Cookies.get('shippingAddress')) : null,
+    paymentMethod: Cookies.get('paymentMethod') ? Cookies.get('paymentMethod') : '',
   },
-  userInfo: Cookies.get('userInfo') ? JSON.parse(Cookies.get('userInfo')) : null
+  userInfo: Cookies.get('userInfo') ? JSON.parse(Cookies.get('userInfo')) : null,
 };
 
 const reducer = (state, action) => {
@@ -42,6 +43,7 @@ const reducer = (state, action) => {
     case 'USER_LOGOUT':
       Cookies.remove('userInfo');
       Cookies.remove('cartItems');
+      Cookies.remove('paymentMethod');
       return {...state, userInfo: null, cart: {cartItems: []}};
     case 'SAVE_SHIPPING_ADDRESS':
       Cookies.set('shippingAddress', JSON.stringify(action.payload));
@@ -52,6 +54,12 @@ const reducer = (state, action) => {
           shippingAddress: action.payload
         }
       };
+    case 'SAVE_PAYMENT_METHOD': 
+      Cookies.set('paymentMethod', action.payload);
+      return {
+        ...state,
+        paymentMethod: action.payload
+      }
     default:
       return {...state};
   }
