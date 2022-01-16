@@ -44,7 +44,7 @@ const reducer = (state, action) => {
       Cookies.remove('userInfo');
       Cookies.remove('cartItems');
       Cookies.remove('paymentMethod');
-      return {...state, userInfo: null, cart: {cartItems: []}};
+      return {...state, userInfo: null, cart: {...state.cart, paymentMethod: '', cartItems: []}};
     case 'SAVE_SHIPPING_ADDRESS':
       Cookies.set('shippingAddress', JSON.stringify(action.payload));
       return {
@@ -68,7 +68,7 @@ const reducer = (state, action) => {
       Cookies.remove('paymentMethod');
       return {
         ...state,
-        cart: {cartItems: [], paymentMethod: ''}
+        cart: {...state.cart, cartItems: [], paymentMethod: ''}
       };
     default:
       return {...state};

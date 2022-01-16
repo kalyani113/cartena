@@ -19,6 +19,11 @@ const orderSchema = mongoose.Schema({
   isDelivered: { type: Boolean, required: true, default: false },
   paidAt: { type: Date },
   deliveredAt: { type: Date },
+  paymentResult: {
+    id: { type: String},
+    status: { type: String},
+    email_address: { type: String}
+  },
 });
 
 const Order = mongoose.models.Order ? mongoose.models.Order : mongoose.model('Order', orderSchema);
