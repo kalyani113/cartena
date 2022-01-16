@@ -1,11 +1,12 @@
 import nc from 'next-connect';
 import User from '../../../models/User';
 import {gerenateToken} from '../../../utils/auth';
+import bcrypt from 'bcrypt';
 
 const handler = nc();
 handler.post(async (req, res) => {
   const {email, password, name} = req.body;
-  const newUser = new User({email, password, name});
+  const newUser = new User({email, password: bcrypt.hashSync(password, 10), name});
   const user = await newUser.save();
   if (user) {
     const token = await gerenateToken(user);
