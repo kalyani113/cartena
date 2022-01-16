@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import Head from 'next/head';
 import {AppBar, Toolbar, Typography, Container, Link, createTheme, ThemeProvider, CssBaseline, Switch, Badge, Button, Menu, MenuItem} from '@material-ui/core';
 import useStyles from '../utils/styles';
@@ -47,8 +47,11 @@ export default function Layout({children, title, description}) {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (redirect) => {
     setAnchorEl(null);
+    if (redirect) {
+      router.push(redirect);
+    }
   };
 
   const handleLogout = () => {
@@ -103,8 +106,8 @@ export default function Layout({children, title, description}) {
             'aria-labelledby': 'basic-button'
           }}
         >
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleClose}>My account</MenuItem>
+          <MenuItem onClick={()=>handleClose('/profile')}>Profile</MenuItem>
+          <MenuItem onClick={()=>handleClose('/orderHistory')}>Order History</MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
         <Container className={classes.main}>{children}</Container>
