@@ -8,6 +8,7 @@ import {Store} from '../utils/Store';
 import {useRouter} from 'next/router';
 import {useForm, Controller} from 'react-hook-form';
 import { useSnackbar } from 'notistack';
+import {getError} from '../utils/error';
 
 export default function Login() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -30,7 +31,7 @@ export default function Login() {
       dispatch({type: 'USER_LOGIN', payload: {...user, token}});
       router.push(redirect ? redirect : '/');
     } catch (error) {
-      enqueueSnackbar(error.response?.data?.message || error, {variant: 'error'});
+      enqueueSnackbar(getError(error), {variant: 'error'});
     }
   };
 

@@ -8,6 +8,7 @@ import axios from 'axios';
 import {Store} from '../utils/Store';
 import {Controller, useForm} from 'react-hook-form';
 import { useSnackbar } from 'notistack';
+import {getError} from '../utils/error';
 
 export default function Register() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -34,7 +35,7 @@ export default function Register() {
       dispatch({type: 'USER_LOGIN', payload: {...user, token}});
       router.push(redirect ? redirect : '/');
     } catch (error) {
-      enqueueSnackbar(error.response?.data?.message || error, {variant: 'error'});
+      enqueueSnackbar(getError(error), {variant: 'error'});
     }
   };
 
