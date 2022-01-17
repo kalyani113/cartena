@@ -6,7 +6,7 @@ import {Store} from '../utils/Store';
 import useStyles from '../utils/styles';
 import NextLink from 'next/link';
 import dynamic from 'next/dynamic';
-import {getError} from '../utils/Error';
+import {getError} from '../utils/error';
 import axios from 'axios';
 
 const reducer = (state, {type, payload}) => {

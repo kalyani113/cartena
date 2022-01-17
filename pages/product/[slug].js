@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import axios from 'axios';
 import Layout from '../../components/Layout';
 import {Grid, Link, List, ListItem, Typography, Button, Card} from '@material-ui/core';
-import Image from 'next/Image';
+import Image from 'next/image';
 import NextLink from 'next/link';
 import useStyles from '../../utils/styles';
 import db from '../../utils/db';
