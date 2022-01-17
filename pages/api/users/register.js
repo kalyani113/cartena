@@ -6,11 +6,11 @@ import db from '../../../utils/db';
 
 const handler = nc();
 handler.post(async (req, res) => {
-  db.connect();
+  await db.connect();
   const {email, password, name} = req.body;
   const newUser = new User({email, password: bcrypt.hashSync(password, 10), name});
   const user = await newUser.save();
-  db.disconnect();
+  await db.disconnect();
   if (user) {
     const token = await gerenateToken(user);
     res.send({
