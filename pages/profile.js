@@ -27,7 +27,7 @@ function Profile() {
 
   const handleUpdate = async ({password, confirmPassword, name, email}) => {
     closeSnackbar();
-    if (password !== confirmPassword) {
+    if ((password || confirmPassword) && password !== confirmPassword) {
       enqueueSnackbar('Passwords are not matching', {variant: 'error'});
       return;
     }
