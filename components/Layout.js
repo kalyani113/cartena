@@ -63,7 +63,7 @@ export default function Layout({children, title, description}) {
   return (
     <div>
       <Head>
-        <title>{title ? `${title} - Next Amazon` : 'Next Amazon'}</title>
+        <title>{title ? `${title} - Cartena` : 'Cartena'}</title>
         {description && <meta name='description' content={description} />}
       </Head>
       <ThemeProvider theme={theme}>
@@ -72,7 +72,7 @@ export default function Layout({children, title, description}) {
           <Toolbar>
             <NextLink href='/' passHref>
               <Link>
-                <Typography className={classes.logo}>Amazon</Typography>
+                <Typography className={classes.logo}>Cartena</Typography>
               </Link>
             </NextLink>
             <div className={classes.flexGrow}></div>
@@ -112,7 +112,7 @@ export default function Layout({children, title, description}) {
         </Menu>
         <Container className={classes.main}>{children}</Container>
         <footer className={classes.footer}>
-          <Typography>All rights reserved. Next Amazona.</Typography>
+          <Typography>All rights reserved. Cartena.</Typography>
         </footer>
       </ThemeProvider>
     </div>
